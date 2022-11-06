@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="styles.css">
+<?php error_reporting(0); ?>
 <?php
 
 $servername = "localhost";
@@ -55,8 +55,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $email = $row['email'];
     $number = $row['number'];
     $average = $row['percentage'];
-    $attendance = $row['attendance_perc'];
+    $attendance_perc = $row['attendance_perc'];
 } else {
+
     $id = $_POST['id'];
     $usn = $_POST['usn'];
     $name = $_POST['name'];
@@ -78,11 +79,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         if (empty($usn) || empty($name) || empty($branch) || empty($email) || empty($gender) || empty($number) || empty($subject1)  || empty($subject2)  || empty($subject3)  || empty($subject4)  || empty($subject5)  || empty($subject6)  || empty($subject7) || empty($subject8) || empty($attendance)) {
             $errorMessage = "All the fields are required";
             break;
+        } else if (($subject1 > 100 || $subject2 > 100 || $subject3 > 100 || $subject4 > 100 || $subject5 > 100 || $subject6 > 100 || $subject7 > 100 || $subject8 > 100) || ($subject1 < 0 || $subject2 < 0 || $subject3 < 0 || $subject4 < 0 || $subject5 < 0 || $subject6 < 0 || $subject7 < 0 || $subject8 < 0)) {
+            $errorMessage = "Marks must be between 0 and 100";
+            break;
+        } else if (($attendance > 120) || ($attendance < 0)) {
+            $errorMessage = "Attendance must be between 0 and 120 days";
+            break;
         }
 
         try {
+            $average = ($subject1 + $subject2 + $subject3 + $subject4 + $subject5 + $subject6 + $subject7 + $subject8) / 8;
+            $attendance_perc = ($attendance / 120) * 100;
             $sql = "UPDATE students " .
-                "SET usn = '$usn', name = '$name', gender = '$gender', branch = '$branch', email = '$email', number = '$number' , subject1 = '$subject1' , subject2 = '$subject2' ,  subject3 = '$subject3' ,  subject4 = '$subject4' ,  subject5 = '$subject5' ,  subject6 = '$subject6' ,  subject7 = '$subject7' ,  subject8 = '$subject8' , attendance = '$attendance' " .
+                "SET usn = '$usn', name = '$name', gender = '$gender', branch = '$branch', email = '$email', number = '$number' , percentage = '$average', attendance_perc = '$attendance_perc' " .
                 "WHERE id = $id";
 
             $result = $connection->query($sql);
@@ -229,20 +238,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                         </div>
                     </div>
                     <br>
+                </div>
+            </div>
 
-                    <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">Overall Attendance</label>
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" name="attendance" value="<?php echo $attendance; ?>">
-                        </div>
-                        <div class="col-sm-4">
-                            <h5> / 120 Days</h5>
-                        </div>
-                    </div>
+            <div class="row mb-3">
+                <label class="col-sm-3 col-form-label">Overall Attendance</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="attendance" value="<?php echo $attendance; ?>">
+                </div>
+                <div class="col-sm-4">
+                    <h5> / 120 Days</h5>
+                </div>
+            </div>
 
-                    <?php
-                    if (!empty($successMessage)) {
-                        echo "
+            <?php
+            if (!empty($successMessage)) {
+                echo "
                     <div class='row mb-3'>
                         <div class='offset-sm-3 col-sm-6'>
                             <div class='alert alert-success alert-dismissible fade show' role='alert'>
@@ -252,19 +263,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
                         </div>
                     </div>
                     ";
-                    }
-                    ?>
+            }
+            ?>
 
 
 
-                    <div class="row mb-3">
-                        <div class="offset-sm-3 col-sm-3 d-grid">
-                            <button type="submit" name="submit_button" value="Submit" class="btn btn-primary">Submit</button>
-                        </div>
-                        <div class="col-sm-3 d-grid">
-                            <button type="submit" name="submit_button" value="Cancel" class="btn btn-outline-primary">Cancel</button>
-                        </div>
-                    </div>
+            <div class="row mb-3">
+                <div class="offset-sm-3 col-sm-3 d-grid">
+                    <button type="submit" name="submit_button" value="Submit" class="btn btn-primary">Submit</button>
+                </div>
+                <div class="col-sm-3 d-grid">
+                    <button type="button" name="submit_button" value="Cancel" onclick="window.location.href='\index.php'" class="btn btn-outline-primary">Cancel</button>
+                </div>
+            </div>
         </form>
     </div>
 </body>
