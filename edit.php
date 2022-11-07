@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 "></script>
 </head>
 
-<body style="background-color:rgba(245,125,67,0.77);">
+<body style="background-color:#082032;">
     <div class="container my-5" style="border: 2px solid black; background-color:#E8F9FD; border-radius:25px; 
     box-shadow:5px 7px #444444">
         <h2>New Student</h2>
@@ -149,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         }
         ?>
 
-        <form method="POST">
+        <form method="POST" style="color: white;">
             <input type="hidden" name="id" value="<?php echo $id; ?>">
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">USN</label>
